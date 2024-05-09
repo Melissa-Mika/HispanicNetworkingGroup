@@ -39,6 +39,8 @@ function getRandomYesNo() {
 
 function displayParticipantTable(participants) {
     table.innerHTML = ''; // Clear previous content
+
+    // Create table headers
     table.createTHead();
     const headerRow = table.createTHead().insertRow();
     const headers = ['Id', 'First Name', 'Last Name', 'Phone', 'Email', 'Join Date', 'Attendance Count', 'Paying Member', 'Actions'];
@@ -48,6 +50,7 @@ function displayParticipantTable(participants) {
         headerRow.appendChild(th);
     });
 
+    // Create table body and populate with participant data
     const tbody = document.createElement('tbody');
     table.appendChild(tbody);
     participants.forEach(participant => {
@@ -62,6 +65,18 @@ function displayParticipantTable(participants) {
         updateButton.textContent = 'Update Attendance';
         updateButton.addEventListener('click', () => updateAttendance(participant.id, participants));
         actionsCell.appendChild(updateButton);
+
+        // Edit button
+        const editButton = document.createElement('button');
+        editButton.textContent = 'Edit';
+        editButton.addEventListener('click', () => editParticipant(participant.id));
+        actionsCell.appendChild(editButton);
+
+        // Delete button
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.addEventListener('click', () => deleteParticipant(participant.id, participants));
+        actionsCell.appendChild(deleteButton);
     });
 }
 
