@@ -3,11 +3,16 @@ let table;
 let participants = []; // Array to store participant details
 
 document.addEventListener('DOMContentLoaded', function () {
+    // Load hardcoded participants
+    participants = getParticipants(); //initialize the array with predefined participants
+
     table = document.createElement('table');
     console.log("Table created:", table);
     table.setAttribute('id', 'participant-table');
     tableContainer = document.getElementById('table-container');
-    tableContainer.appendChild(table); // Append the table to its container once
+    tableContainer.appendChild(table); // Append the table to its container 
+
+    displayParticipantTable(participants);
 
     // Login submission event listener
     document.getElementById('login-form').addEventListener('submit', function (event) {
