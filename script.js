@@ -14,6 +14,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     displayParticipantTable(participants);
 
+    // Handling the edit modal and form submit just once on load:
+    document.getElementById('edit-participant-form').addEventListener('submit', handleEditFormSubmit);
+    document.querySelector('.close').addEventListener('click', function () {
+        document.getElementById('edit-modal').style.display = 'none';
+    });
+
     // Login submission event listener
     document.getElementById('login-form').addEventListener('submit', function (event) {
         event.preventDefault();
@@ -31,12 +37,30 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    
-    
+});
+
+function editParticipant(participantId) {
+    console.log("Editing participant ID:", participantId);
+    const participant = getParticipantById(participantId);
+    if (participant) {
+        document.getElementById('edit-participant-id').value = participantId // Set the participant ID
+        document.getElementById('edit-first-name').value = participant.firstName;
+        document.getElementById('edit-last-name').value = participant.lastName;
+        document.getElementById('edit-phone').value = participant.phone; // Populate phone
+        document.getElementById('edit-email').value = participant.email; // Populate email
+        document.getElementById('edit-join-date').value = participant.joinDate; // Populate join date
+        document.getElementById('attendance-count').value = participant.attendanceCount; // Populate attendance count
+
+        document.getElementById('edit-modal').style.display = 'block';
+    }
 
     // Function to handle form submission for editing participant
     document.getElementById('edit-participant-form').addEventListener('submit', function (event) {
         event.preventDefault();
+
+        console.log(participants);  // Log the whole array to see the updated data
+
+        
         // Implement logic to update participant details based on form input
         // Hide the modal after saving changes
         document.getElementById('edit-modal').style.display = 'none';
@@ -47,19 +71,51 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('edit-modal').style.display = 'none';
     });
 
-});
+    // Saving changes and updating array
+    document.getElementById('edit-participant-form').addEventListener('submit', function (event) {
+        event.preventDefault();
 
-function editParticipant(participantId) {
+        // Retrieve the ID from the hidden input
+        const participantId = parseInt(document.getElementById('edit-participant-id').value, 10); // Retrieving from hidden input
+        const participant = getParticipantById(participantId);
+        
+        if (participant) {
+            // Update the participant data with values from the form
+            participant.firstName = document.getElementById('edit-first-name').value;
+            participant.lastName = document.getElementById('edit-last-name').value;
+            participant.phone = document.getElementById('edit-phone').value;
+            participant.email = document.getElementById('edit-email').value;
+            participant.joinDate = document.getElementById('edit-join-date').value;
+            participant.attendanceCount = parseInt(document.getElementById('attendance-count').value, 10);
+            
+            console.log("Updated Participants:", participant);
+
+            // Refresh the participant table to reflect changes
+            displayParticipantTable(participants); 
+            document.getElementById('edit-modal').style.display = 'none'; // Hide the modal
+        }
+    });
+    
+}
+
+function handleEditFormSubmit(event) {
+    event.preventDefault();
+
+    const participantId = parseInt(document.getElementById('edit-participant-id').value, 10);
     const participant = getParticipantById(participantId);
+    
     if (participant) {
-        document.getElementById('edit-first-name').value = participant.firstName;
-        document.getElementById('edit-last-name').value = participant.lastName;
-        document.getElementById('edit-phone').value = participant.phone; // Populate phone
-        document.getElementById('edit-email').value = participant.email; // Populate email
-        document.getElementById('edit-join-date').value = participant.joinDate; // Populate join date
-        document.getElementById('attendance-count').value = participant.attendanceCount; // Populate attendance count
+        participant.firstName = document.getElementById('edit-first-name').value;
+        participant.lastName = document.getElementById('edit-last-name').value;
+        participant.phone = document.getElementById('edit-phone').value;
+        participant.email = document.getElementById('edit-email').value;
+        participant.joinDate = document.getElementById('edit-join-date').value;
+        participant.attendanceCount = parseInt(document.getElementById('attendance-count').value, 10);
 
-        document.getElementById('edit-modal').style.display = 'block';
+        displayParticipantTable(participants);
+        document.getElementById('edit-modal').style.display = 'none';
+    } else {
+        console.error("Participant not found with ID:", participantId);
     }
 }
 
@@ -228,8 +284,6 @@ function addInputField(form, labelContent, inputType, inputId, placeholder, valu
     form.appendChild(input);
 }
 
-// Function to handle opening the edit modal and populating form fields
-
-
-
-
+function getParticipantById(id) {
+    return participants.find(participant => participant.id === id);
+}
