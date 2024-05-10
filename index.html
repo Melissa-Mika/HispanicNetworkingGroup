@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Attendance Tracker</title>
 
-<!-- Requests that page does not search for favicon-->
-<link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <!-- Requests that page does not search for favicon-->
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 
 
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
 
     <div class="login-container" id="login-container">
@@ -24,20 +26,53 @@
     </div>
 
     <div id="add-member-container"></div>
+
     <div id="add-member-form" class="add-member-form" style="display:none">
         <!-- Add member form will appear here-->
+
     </div>
-</div>
+    </div>
 
     <div class="table-container" id="table-container" style="display:none">
         <h2>Participant Records</h2>
         <!-- Table populated dynamically-->
     </div>
 
-    
+    <!-- Edit Modal -->
+    <div id="edit-modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Edit Participant</h2>
+            <form id="edit-participant-form">
+                <!-- Form fields for editing participant -->
+                <label for="edit-first-name">First Name:</label>
+                <input type="text" id="edit-first-name" name="edit-first-name" required>
+
+                <label for="edit-last-name">Last Name:</label>
+                <input type="text" id="edit-last-name" name="edit-last-name" required>
+
+                <label for="edit-phone">Phone:</label>
+                <input type="text" id="edit-phone" name="edit-phone" required>
+
+                <label for="edit-email">Email:</label>
+                <input type="text" id="edit-email" name="edit-email" required>
+
+                <label for="edit-join-date">Join Date:</label>
+                <input type="date" name="edit-join-date" id="edit-join-date" required>
+
+                <label for="attendance-count">Attendance Count:</label>
+                <input type="number" name="attendance-count" id="attendance-count" required>
+                <!-- Add other fields here -->
+
+                <button type="submit">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
 
     <script src="script.js"></script>
 
 
 </body>
+
 </html>

@@ -1,5 +1,6 @@
 let tableContainer;
 let table;
+let participants = []; // Array to store participant details
 
 document.addEventListener('DOMContentLoaded', function () {
     table = document.createElement('table');
@@ -19,12 +20,43 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('login-container').style.display = 'none';
             displayParticipantTable(getParticipants());
             appendAddMemberButton();
-            document.getElementById('table-container').style.display='block';
+            document.getElementById('table-container').style.display = 'block';
         } else {
             document.getElementById('login-error').textContent = 'Invalid username or password';
         }
     });
+
+    
+    
+
+    // Function to handle form submission for editing participant
+    document.getElementById('edit-participant-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+        // Implement logic to update participant details based on form input
+        // Hide the modal after saving changes
+        document.getElementById('edit-modal').style.display = 'none';
+    });
+
+    // Function to close the modal when the close button is clicked
+    document.querySelector('.close').addEventListener('click', function () {
+        document.getElementById('edit-modal').style.display = 'none';
+    });
+
 });
+
+function editParticipant(participantId) {
+    const participant = getParticipantById(participantId);
+    if (participant) {
+        document.getElementById('edit-first-name').value = participant.firstName;
+        document.getElementById('edit-last-name').value = participant.lastName;
+        document.getElementById('edit-phone').value = participant.phone; // Populate phone
+        document.getElementById('edit-email').value = participant.email; // Populate email
+        document.getElementById('edit-join-date').value = participant.joinDate; // Populate join date
+        document.getElementById('attendance-count').value = participant.attendanceCount; // Populate attendance count
+
+        document.getElementById('edit-modal').style.display = 'block';
+    }
+}
 
 function getParticipants() {
     return [
@@ -104,8 +136,11 @@ function appendAddMemberButton() {
 
 function showAddMemberForm() {
     const addMemberForm = document.getElementById('add-member-form');
-    addMemberForm.innerHTML = '';  // Clear any existing content
-    
+    addMemberForm.style.display = 'block';
+
+    // Clear previous form if any
+    addMemberForm.innerHTML = '';
+
     // Create the form elements dynamically
     const form = document.createElement('form');
 
@@ -132,33 +167,48 @@ function showAddMemberForm() {
     select.appendChild(optionNo);
     form.appendChild(select);
 
-     // Submit button
-     const submitButton = document.createElement('button');
-     submitButton.textContent = 'Submit';
-     submitButton.type = 'button';
-     submitButton.addEventListener('click', function (event) {
-         event.preventDefault();
-         console.log("Form Submitted");
-         
-         addMemberForm.style.display = 'none';  // Hide form after submission
-         addMemberForm.innerHTML = '';  // Clear form
-     });
-     form.appendChild(submitButton);
- 
-     // Cancel button
-     const cancelButton = document.createElement('button');
-     cancelButton.textContent = 'Cancel';
-     cancelButton.type = 'button';
-     cancelButton.addEventListener('click', function () {
-         addMemberForm.style.display = 'none';
-         addMemberForm.innerHTML = '';
-     });
-     form.appendChild(cancelButton);
- 
-     // Append the form to the container and display it
-     addMemberForm.appendChild(form);
-     addMemberForm.style.display = 'block'; // Make sure the form is visible
- }
+    // Submit button
+    const submitButton = document.createElement('button');
+    submitButton.textContent = 'Submit';
+    submitButton.type = 'submit';
+    form.appendChild(submitButton)
+
+
+    // Cancel button
+    const cancelButton = document.createElement('button');
+    cancelButton.textContent = 'Cancel';
+    cancelButton.type = 'button';
+    cancelButton.addEventListener('click', function () {
+        addMemberForm.style.display = 'none';
+        addMemberForm.innerHTML = '';
+    });
+    form.appendChild(cancelButton);
+
+    // Append the form to the container and display it
+    addMemberForm.appendChild(form);
+    
+    // Handle form submission
+    form.onsubmit = function(event) {
+        event.preventDefault();
+        const newParticipant = {
+            id: participants.length + 1, // Assign a unique ID
+            firstName: document.getElementById('new-member-first-name').value,
+            lastName: document.getElementById('new-member-last-name').value,
+            phone: document.getElementById('new-member-phone').value,
+            email: document.getElementById('new-member-email').value,
+            joinDate: document.getElementById('new-member-join-date').value,
+            attendanceCount: 0,
+            payingMember: 'No' // Initially set to 'No'
+        };
+
+        participants.push(newParticipant);
+        displayParticipantTable(participants);
+
+        // Hide and clear the form after submission
+        addMemberForm.style.display = 'none';
+        addMemberForm.innerHTML = '';
+    };
+}
 
 // Helper function to add input fields to the form
 function addInputField(form, labelContent, inputType, inputId, placeholder, value = '') {
@@ -172,6 +222,8 @@ function addInputField(form, labelContent, inputType, inputId, placeholder, valu
     input.value = value;
     form.appendChild(input);
 }
+
+// Function to handle opening the edit modal and populating form fields
 
 
 
