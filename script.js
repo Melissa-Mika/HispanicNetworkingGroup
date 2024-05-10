@@ -119,6 +119,15 @@ function handleEditFormSubmit(event) {
     }
 }
 
+function deleteParticipant(participantId) {
+    // Filter out the participant to delete
+    participants = participants.filter(participant => participant.id !== participantId);
+
+    // Redisplay the table after deletion
+    displayParticipantTable(participants);
+}
+
+
 function getParticipants() {
     return [
         { id: 1, firstName: 'John', lastName: 'Doe', phone: '123-456-7890', email: 'john@example.com', joinDate: '2024-01-01', attendanceCount: 0, payingMember: getRandomYesNo() },
@@ -168,7 +177,7 @@ function displayParticipantTable(participants) {
         // Delete button
         const deleteButton = document.createElement('button');
         deleteButton.textContent = 'Delete';
-        deleteButton.addEventListener('click', () => deleteParticipant(participant.id, participants));
+        deleteButton.addEventListener('click', () => deleteParticipant(participant.id));
         actionsCell.appendChild(deleteButton);
     });
 }

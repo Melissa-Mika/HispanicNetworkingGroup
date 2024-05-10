@@ -34,4 +34,29 @@ button {
     color: red;
 }
 
+/* Logo and Title Flexbox */
+.logo-title-flex-container {
+    display: flex;            /* Enables flexbox */
+    align-items: center;      /* Vertically center align the items */
+    justify-content: flex-start; /* Align items from the start of the container */
+    gap: 20px;                /* Optional: adds space between the image and the title */
+}
+
+.logo-image {
+    width: 100px;             /* Fixed width for the image */
+    height: auto;             /* Maintain aspect ratio */
+}
+
+.group-title {
+    margin: 0;                /* Removes default margin of h1 */
+    font-size: 24px;          /* Optional: sets the font size */
+}
+
+.participant-records {
+    text-align: center;
+    color:deeppink;
+    font-weight: bold;
+}
+
+
 
