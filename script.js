@@ -48,7 +48,7 @@ function editParticipant(participantId) {
         document.getElementById('edit-last-name').value = participant.lastName;
         document.getElementById('edit-phone').value = participant.phone; // Populate phone
         document.getElementById('edit-email').value = participant.email; // Populate email
-        document.getElementById('edit-join-date').value = participant.joinDate; // Populate join date
+        document.getElementById('edit-join-date').value = formatDate(participant.joinDate);  // Populate join date
         document.getElementById('attendance-count').value = participant.attendanceCount; // Populate attendance count
 
         document.getElementById('edit-modal').style.display = 'block';
@@ -66,7 +66,7 @@ function editParticipant(participantId) {
         document.getElementById('edit-modal').style.display = 'none';
     });
 
-    // Function to close the modal when the close button is clicked
+    // close the modal when the close button is clicked
     document.querySelector('.close').addEventListener('click', function () {
         document.getElementById('edit-modal').style.display = 'none';
     });
@@ -145,7 +145,7 @@ function displayParticipantTable(participants) {
     // Create table headers
     table.createTHead();
     const headerRow = table.createTHead().insertRow();
-    const headers = ['Id', 'First Name', 'Last Name', 'Phone', 'Email', 'Join Date', 'Attendance Count', 'Paying Member', 'Actions'];
+    const headers = ['','First Name', 'Last Name', 'Phone', 'Email', 'Join Date', 'Attendance Count', 'Paying Member', 'Actions'];
     headers.forEach(headerText => {
         const th = document.createElement('th');
         th.textContent = headerText;
@@ -157,9 +157,9 @@ function displayParticipantTable(participants) {
     table.appendChild(tbody);
     participants.forEach(participant => {
         const row = tbody.insertRow();
-        Object.values(participant).forEach(value => {
+        Object.keys(participant).forEach(key => {
             const cell = row.insertCell();
-            cell.textContent = value;
+            cell.textContent = key === 'joinDate' ? formatDate(participant[key]) : participant[key];
         });
 
         const actionsCell = row.insertCell();
@@ -188,6 +188,15 @@ function displayParticipantTable(participants) {
         actionsCell.appendChild(actionsContainer);
         console.log("Actions container appended to cell:", actionsCell);
     });
+}
+
+// Function to format 'join-date'
+function formatDate(inputDate) {
+    const dateParts = inputDate.split('-'); // Split the input date by hyphens
+    const year = dateParts[0].slice(-2); // Get the last two digits of the year
+    const month = dateParts[1];
+    const day = dateParts[2];
+    return `${month}/${day}/${year}`; // Format the date as MM/DD/YY
 }
 
 function updateAttendance(memberId, participants) {
@@ -249,6 +258,7 @@ function showAddMemberForm() {
     const submitButton = document.createElement('button');
     submitButton.textContent = 'Submit';
     submitButton.type = 'submit';
+    submitButton.classList.add('submit-button');
     form.appendChild(submitButton)
 
 
@@ -256,6 +266,7 @@ function showAddMemberForm() {
     const cancelButton = document.createElement('button');
     cancelButton.textContent = 'Cancel';
     cancelButton.type = 'button';
+    cancelButton.classList.add('cancel-button');
     cancelButton.addEventListener('click', function () {
         addMemberForm.style.display = 'none';
         addMemberForm.innerHTML = '';
