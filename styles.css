@@ -3,15 +3,15 @@
     padding: 0px;
 }
 
+body {
+    
+}
+
+/* Login */
 .login-container {
     max-width: 300px;
     margin: 100px auto;
     text-align: center;
-}
-
-.table-container {
-    max-width: 800px;
-    margin: 50px auto;
 }
 
 input[type="text"],
@@ -36,10 +36,10 @@ button {
 
 /* Logo and Title Flexbox */
 .logo-title-flex-container {
-    display: flex;            /* Enables flexbox */
-    align-items: center;      /* Vertically center align the items */
-    justify-content: flex-start; /* Align items from the start of the container */
-    gap: 20px;                /* Optional: adds space between the image and the title */
+    display: flex;            
+    align-items: center;      
+    justify-content: center;
+                  
 }
 
 .logo-image {
@@ -48,8 +48,9 @@ button {
 }
 
 .group-title {
-    margin: 0;                /* Removes default margin of h1 */
-    font-size: 24px;          /* Optional: sets the font size */
+                   
+    font-size: 24px;   
+    text-align: center;       
 }
 
 .participant-records {
@@ -57,6 +58,91 @@ button {
     color:deeppink;
     font-weight: bold;
 }
+
+/* Table */
+/* Style the table */
+table {
+    width: 90%; 
+    margin: 0 auto; /* Center the table horizontally */
+    border-collapse: collapse;
+}
+
+#table-container {
+    width: 80;
+    
+    margin: auto;
+}
+
+#participant-table {
+   
+}
+
+/* table header */
+th {
+    background-color: #f2f2f2;
+    padding: 8px;
+    text-align: center;
+}
+
+/* table cells */
+td {
+    border-bottom: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+/* action buttons container */
+.actions {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+/* action buttons */
+.actions button {
+    padding: 6px 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-right: 5px;
+    width: 120px; /* fixed width */
+    height: 40px; /* fixed height */
+}
+
+/* edit button */
+.actions button.edit {
+    background-color: #007bff;
+}
+
+/* delete button */
+.actions button.delete {
+    background-color: #dc3545;
+}
+
+/* form input fields */
+input[type="text"],
+input[type="date"],
+input[type="number"] {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+/* form submit button */
+input[type="submit"] {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
 
 
 

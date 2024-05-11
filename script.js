@@ -163,22 +163,30 @@ function displayParticipantTable(participants) {
         });
 
         const actionsCell = row.insertCell();
+        const actionsContainer = document.createElement('div');
+        actionsContainer.classList.add('actions');
+        console.log("Actions container created:", actionsContainer);
+
+        // Append action buttons to the actions container
         const updateButton = document.createElement('button');
         updateButton.textContent = 'Update Attendance';
         updateButton.addEventListener('click', () => updateAttendance(participant.id, participants));
-        actionsCell.appendChild(updateButton);
+        actionsContainer.appendChild(updateButton);
 
         // Edit button
         const editButton = document.createElement('button');
         editButton.textContent = 'Edit';
         editButton.addEventListener('click', () => editParticipant(participant.id));
-        actionsCell.appendChild(editButton);
+        actionsContainer.appendChild(editButton);
 
         // Delete button
         const deleteButton = document.createElement('button');
         deleteButton.textContent = 'Delete';
         deleteButton.addEventListener('click', () => deleteParticipant(participant.id));
-        actionsCell.appendChild(deleteButton);
+        actionsContainer.appendChild(deleteButton);
+
+        actionsCell.appendChild(actionsContainer);
+        console.log("Actions container appended to cell:", actionsCell);
     });
 }
 
