@@ -6,8 +6,19 @@ document.addEventListener('DOMContentLoaded', function () {
     // Load hardcoded participants
     participants = getParticipants(); //initialize the array with predefined participants
 
+    // Create paying member select dropdown
+    const editPayingMemberSelect = document.createElement('select');
+    editPayingMemberSelect.id = 'edit-paying-member';
+    const optionYes = document.createElement('option');
+    optionYes.value = 'Yes';
+    optionYes.textContent = 'Yes';
+    editPayingMemberSelect.appendChild(optionYes);
+    const optionNo = document.createElement('option');
+    optionNo.value = 'No';
+    optionNo.textContent = 'No';
+    editPayingMemberSelect.appendChild(optionNo);
+
     table = document.createElement('table');
-    console.log("Table created:", table);
     table.setAttribute('id', 'participant-table');
     tableContainer = document.getElementById('table-container');
     tableContainer.appendChild(table); // Append the table to its container 
@@ -39,6 +50,86 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
+function showAddMemberForm() {
+    const addMemberForm = document.getElementById('add-member-form');
+    addMemberForm.style.display = 'block';
+
+    // Clear previous form if any
+    addMemberForm.innerHTML = '';
+
+    // Create the form elements dynamically
+    const form = document.createElement('form');
+
+    addInputField(form, 'First Name:', 'text', 'new-member-first-name', 'Enter first name');
+    addInputField(form, 'Last Name:', 'text', 'new-member-last-name', 'Enter last name');
+    addInputField(form, 'Phone:', 'text', 'new-member-phone', 'Enter phone number');
+    addInputField(form, 'Email:', 'text', 'new-member-email', 'Enter email address');
+    addInputField(form, 'Join Date:', 'date', 'new-member-join-date');
+    addInputField(form, 'Attendance Count:', 'number', 'new-member-attendance', '', '0');
+
+    // Paying member select
+    const selectLabel = document.createElement('label');
+    selectLabel.textContent = 'Paying Member:';
+    form.appendChild(selectLabel);
+    const select = document.createElement('select');
+    select.id = 'edit-paying-member';
+    const optionYes = document.createElement('option');
+    optionYes.value = 'Yes';
+    optionYes.textContent = 'Yes';
+    select.appendChild(optionYes);
+    const optionNo = document.createElement('option');
+    optionNo.value = 'No';
+    optionNo.textContent = 'No';
+    select.appendChild(optionNo);
+    form.appendChild(select);
+
+     
+    // Submit button
+    const submitButton = document.createElement('button');
+    submitButton.textContent = 'Submit';
+    submitButton.type = 'submit';
+    submitButton.classList.add('submit-button');
+    form.appendChild(submitButton)
+
+
+    // Cancel button
+    const cancelButton = document.createElement('button');
+    cancelButton.textContent = 'Cancel';
+    cancelButton.type = 'button';
+    cancelButton.classList.add('cancel-button');
+    cancelButton.addEventListener('click', function () {
+        addMemberForm.style.display = 'none';
+        addMemberForm.innerHTML = '';
+    });
+    form.appendChild(cancelButton);
+
+    // Append the form to the container and display it
+    addMemberForm.appendChild(form);
+    
+    // Handle form submission
+    form.onsubmit = function(event) {
+        event.preventDefault();
+        const newParticipant = {
+            id: participants.length + 1, // Assign a unique ID
+            firstName: document.getElementById('new-member-first-name').value,
+            lastName: document.getElementById('new-member-last-name').value,
+            phone: document.getElementById('new-member-phone').value,
+            email: document.getElementById('new-member-email').value,
+            joinDate: document.getElementById('new-member-join-date').value,
+            attendanceCount: 0,
+            payingMember: 'No' // Initially set to 'No'
+        };
+
+        participants.push(newParticipant);
+        displayParticipantTable(participants);
+
+        // Hide and clear the form after submission
+        addMemberForm.style.display = 'none';
+        addMemberForm.innerHTML = '';
+    };
+}
+
+
 function editParticipant(participantId) {
     console.log("Editing participant ID:", participantId);
     const participant = getParticipantById(participantId);
@@ -51,20 +142,43 @@ function editParticipant(participantId) {
         document.getElementById('edit-join-date').value = formatDate(participant.joinDate);  // Populate join date
         document.getElementById('attendance-count').value = participant.attendanceCount; // Populate attendance count
 
+        // Create paying member select dropdown
+        const selectLabel = document.createElement('label');
+        selectLabel.textContent = 'Paying Member:';
+        const select = document.createElement('select');
+        select.id = 'edit-paying-member';
+        const optionYes = document.createElement('option');
+        optionYes.value = 'Yes';
+        optionYes.textContent = 'Yes';
+        const optionNo = document.createElement('option');
+        optionNo.value = 'No';
+        optionNo.textContent = 'No';
+        select.appendChild(optionYes);
+        select.appendChild(optionNo);
+
+         // Set the value of the select dropdown to the participant's payingMember value
+         select.value = participant.payingMember;
+
+        // Append the label and select dropdown to the form
+        const form = document.getElementById('edit-participant-form');
+        form.appendChild(selectLabel);
+        form.appendChild(select);
+        
+        // Append form submission buttons
+        appendFormButtons(form);
+
         document.getElementById('edit-modal').style.display = 'block';
     }
 
-    // Function to handle form submission for editing participant
-    document.getElementById('edit-participant-form').addEventListener('submit', function (event) {
+    // handle form submission for editing participant
+    document.getElementById('edit-participant-form').onsubmit = function (event) {
         event.preventDefault();
+        handleEditFormSubmit(event); // Call the handleEditFormSubmit function
 
-        console.log(participants);  // Log the whole array to see the updated data
-
-        
         // Implement logic to update participant details based on form input
         // Hide the modal after saving changes
         document.getElementById('edit-modal').style.display = 'none';
-    });
+    };
 
     // close the modal when the close button is clicked
     document.querySelector('.close').addEventListener('click', function () {
@@ -95,6 +209,26 @@ function editParticipant(participantId) {
             document.getElementById('edit-modal').style.display = 'none'; // Hide the modal
         }
     });
+
+    // Function to append form submission buttons
+function appendFormButtons(form) {
+    // Submit button
+    const submitButton = document.createElement('button');
+    submitButton.textContent = 'Save Changes';
+    submitButton.type = 'submit';
+    submitButton.classList.add('submit-button');
+    form.appendChild(submitButton);
+
+    // Cancel button
+    const cancelButton = document.createElement('button');
+    cancelButton.textContent = 'Cancel';
+    cancelButton.type = 'button';
+    cancelButton.classList.add('cancel-button');
+    cancelButton.addEventListener('click', function () {
+        document.getElementById('edit-modal').style.display = 'none';
+    });
+    form.appendChild(cancelButton);
+}
     
 }
 
@@ -167,8 +301,7 @@ function displayParticipantTable(participants) {
         const actionsCell = row.insertCell();
         const actionsContainer = document.createElement('div');
         actionsContainer.classList.add('actions');
-        console.log("Actions container created:", actionsContainer);
-
+        
         // Append action buttons to the actions container
         const updateButton = document.createElement('button');
         updateButton.textContent = 'Update Attendance';
@@ -188,7 +321,7 @@ function displayParticipantTable(participants) {
         actionsContainer.appendChild(deleteButton);
 
         actionsCell.appendChild(actionsContainer);
-        console.log("Actions container appended to cell:", actionsCell);
+        
     });
 }
 
@@ -232,84 +365,6 @@ function appendAddMemberButton() {
         addButton.addEventListener('click', showAddMemberForm);
         document.getElementById('add-member-container').appendChild(addButton);
     }
-}
-
-function showAddMemberForm() {
-    const addMemberForm = document.getElementById('add-member-form');
-    addMemberForm.style.display = 'block';
-
-    // Clear previous form if any
-    addMemberForm.innerHTML = '';
-
-    // Create the form elements dynamically
-    const form = document.createElement('form');
-
-    addInputField(form, 'First Name:', 'text', 'new-member-first-name', 'Enter first name');
-    addInputField(form, 'Last Name:', 'text', 'new-member-last-name', 'Enter last name');
-    addInputField(form, 'Phone:', 'text', 'new-member-phone', 'Enter phone number');
-    addInputField(form, 'Email:', 'text', 'new-member-email', 'Enter email address');
-    addInputField(form, 'Join Date:', 'date', 'new-member-join-date');
-    addInputField(form, 'Attendance Count:', 'number', 'new-member-attendance', '', '0');
-
-    // Paying member select
-    const selectLabel = document.createElement('label');
-    selectLabel.textContent = 'Paying Member:';
-    form.appendChild(selectLabel);
-    const select = document.createElement('select');
-    select.id = 'new-member-paying';
-    const optionYes = document.createElement('option');
-    optionYes.value = 'Yes';
-    optionYes.textContent = 'Yes';
-    select.appendChild(optionYes);
-    const optionNo = document.createElement('option');
-    optionNo.value = 'No';
-    optionNo.textContent = 'No';
-    select.appendChild(optionNo);
-    form.appendChild(select);
-
-    // Submit button
-    const submitButton = document.createElement('button');
-    submitButton.textContent = 'Submit';
-    submitButton.type = 'submit';
-    submitButton.classList.add('submit-button');
-    form.appendChild(submitButton)
-
-
-    // Cancel button
-    const cancelButton = document.createElement('button');
-    cancelButton.textContent = 'Cancel';
-    cancelButton.type = 'button';
-    cancelButton.classList.add('cancel-button');
-    cancelButton.addEventListener('click', function () {
-        addMemberForm.style.display = 'none';
-        addMemberForm.innerHTML = '';
-    });
-    form.appendChild(cancelButton);
-
-    // Append the form to the container and display it
-    addMemberForm.appendChild(form);
-    
-    // Handle form submission
-    form.onsubmit = function(event) {
-        event.preventDefault();
-        const newParticipant = {
-            id: participants.length + 1, // Assign a unique ID
-            firstName: document.getElementById('new-member-first-name').value,
-            lastName: document.getElementById('new-member-last-name').value,
-            phone: document.getElementById('new-member-phone').value,
-            email: document.getElementById('new-member-email').value,
-            joinDate: document.getElementById('new-member-join-date').value,
-            attendanceCount: 0,
-            payingMember: 'No' // Initially set to 'No'
-        };
-
-        participants.push(newParticipant);
-        displayParticipantTable(participants);
-
-        // Hide and clear the form after submission
-        addMemberForm.style.display = 'none';
-        addMemberForm.innerHTML = '';
-    };
 }
 
 // Helper function to add input fields to the form
