@@ -160,6 +160,8 @@ function displayParticipantTable(participants) {
         Object.keys(participant).forEach(key => {
             const cell = row.insertCell();
             cell.textContent = key === 'joinDate' ? formatDate(participant[key]) : participant[key];
+            cell.setAttribute('data-id', participant.id); // Set data-id attribute
+            cell.setAttribute('data-key', key); // Set data-key attribute
         });
 
         const actionsCell = row.insertCell();
@@ -206,8 +208,19 @@ function updateAttendance(memberId, participants) {
         participant.attendanceCount++;
         if (participant.attendanceCount >= 3) {
             participant.payingMember = 'Yes';
+            // Highlight first and last name
+            highlightName(memberId);
         }
         displayParticipantTable(participants); // Redisplay the table with updated data
+    }
+}
+
+function highlightName(memberId) {
+    const firstNameCell = document.querySelector(`[data-id="${memberId}"][data-key="firstName"]`);
+    const lastNameCell = document.querySelector(`[data-id="${memberId}"][data-key="lastName"]`);
+    if (firstNameCell && lastNameCell) {
+        firstNameCell.classList.add('highlight');
+        lastNameCell.classList.add('highlight');
     }
 }
 
