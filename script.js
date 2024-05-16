@@ -1,6 +1,7 @@
 let tableContainer;
 let table;
 let participants = []; // Array to store participant details
+let originalJoinDate;
 
 document.addEventListener('DOMContentLoaded', function () {
     // Load hardcoded participants
@@ -139,7 +140,12 @@ function editParticipant(participantId) {
         document.getElementById('edit-last-name').value = participant.lastName;
         document.getElementById('edit-phone').value = participant.phone; // Populate phone
         document.getElementById('edit-email').value = participant.email; // Populate email
-        document.getElementById('edit-join-date').value = formatDate(participant.joinDate);  // Populate join date
+
+        // Store the original join date
+        const originalJoinDate = participant.joinDate;
+
+        // Populate join date and attendance count
+        document.getElementById('edit-join-date').value = originalJoinDate;  // Populate join date
         document.getElementById('attendance-count').value = participant.attendanceCount; // Populate attendance count
 
         // Create paying member select dropdown
@@ -210,6 +216,7 @@ function editParticipant(participantId) {
         }
     });
 
+
     // Function to append form submission buttons
 function appendFormButtons(form) {
     // Submit button
@@ -232,18 +239,19 @@ function appendFormButtons(form) {
     
 }
 
-function handleEditFormSubmit(event) {
+function handleEditFormSubmit(event, originalJoinDate) {
     event.preventDefault();
 
     const participantId = parseInt(document.getElementById('edit-participant-id').value, 10);
     const participant = getParticipantById(participantId);
     
     if (participant) {
+        const originalJoinDate = participant.joinDate; // Retrieve the original join date
         participant.firstName = document.getElementById('edit-first-name').value;
         participant.lastName = document.getElementById('edit-last-name').value;
         participant.phone = document.getElementById('edit-phone').value;
         participant.email = document.getElementById('edit-email').value;
-        participant.joinDate = document.getElementById('edit-join-date').value;
+        participant.joinDate = document.getElementById('edit-join-date').value !== formatDate(originalJoinDate) ? document.getElementById('edit-join-date').value : originalJoinDate; // Use new join date if changed, otherwise use original
         participant.attendanceCount = parseInt(document.getElementById('attendance-count').value, 10);
 
         displayParticipantTable(participants);
@@ -252,6 +260,7 @@ function handleEditFormSubmit(event) {
         console.error("Participant not found with ID:", participantId);
     }
 }
+
 
 function deleteParticipant(participantId) {
     // Filter out the participant to delete

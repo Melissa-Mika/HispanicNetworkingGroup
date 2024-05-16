@@ -24,7 +24,7 @@ button {
 }
 
 button {
-    background-color: #007bff;
+    background-color: #4CAF50;
     color: #fff;
     border: none;
     cursor: pointer;
@@ -120,7 +120,7 @@ td {
     cursor: pointer;
     border-radius: 4px;
     margin-right: 5px;
-    width: 120px; /* fixed width */
+    width: 100px; /* fixed width */
     height: 40px; /* fixed height */
 }
 
@@ -180,6 +180,57 @@ input[type="submit"] {
 [data-id][data-key="lastName"].highlight {
     color: red;
 }
+
+/* Table */
+/* Style for table headers */
+#participant-table th {
+    background-color: #f2f2f2; /* Background color */
+    color: #333; 
+    padding: 10px; 
+    text-align: center; 
+}
+
+/* Style for table cells */
+#participant-table td {
+    border-bottom: 3px solid #ddd; /* Add a bottom border */
+    padding: 10px; 
+}
+
+/* Highlight for first and last name cells */
+.highlight {
+    font-weight: bold; /* Bold text */
+    color: #ff0000; /* Red color */
+}
+
+/* Edit Form */
+.edit-participant-title {
+    text-align: center;
+    color: deeppink;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+#edit-participant-form {
+    margin: auto;
+    width: 60%;
+}
+
+/* Visually hide the close button while keeping it accessible */
+.close {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+}
+
+
+/* Highlight the input field when focused */
+input:focus {
+    border-color: deeppink; /* Change border color to blue */
+    background-color: #f0f0f0; /* Change background color to light gray */
+}
+
+
+
 
 
 
