@@ -3,6 +3,33 @@ let table;
 let participants = []; // Array to store participant details
 let originalJoinDate;
 
+
+// Initialize select dropdown, submit button, and cancel button
+const editPayingMemberSelect = document.createElement('select');
+editPayingMemberSelect.id = 'edit-paying-member';
+const optionYes = document.createElement('option');
+optionYes.value = 'Yes';
+optionYes.textContent = 'Yes';
+editPayingMemberSelect.appendChild(optionYes);
+const optionNo = document.createElement('option');
+optionNo.value = 'No';
+optionNo.textContent = 'No';
+editPayingMemberSelect.appendChild(optionNo);
+
+const submitButton = document.createElement('button');
+submitButton.textContent = 'Save Changes';
+submitButton.type = 'submit';
+submitButton.classList.add('submit-button');
+
+const cancelButton = document.createElement('button');
+cancelButton.textContent = 'Cancel';
+cancelButton.type = 'button';
+cancelButton.classList.add('cancel-button');
+cancelButton.addEventListener('click', function () {
+    document.getElementById('edit-modal').style.display = 'none';
+});
+
+
 document.addEventListener('DOMContentLoaded', function () {
     // Load hardcoded participants
     participants = getParticipants(); //initialize the array with predefined participants
@@ -46,6 +73,15 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('table-container').style.display = 'block';
         } else {
             document.getElementById('login-error').textContent = 'Invalid username or password';
+        }
+    });
+
+    // Add event listener for edit buttons outside of displayParticipantTable function
+    document.getElementById('participant-table').addEventListener('click', function (event) {
+        const target = event.target;
+        if (target.classList.contains('edit-button')) {
+            const participantId = parseInt(target.getAttribute('data-id'));
+            editParticipant(participantId);
         }
     });
 
@@ -135,11 +171,57 @@ function editParticipant(participantId) {
     console.log("Editing participant ID:", participantId);
     const participant = getParticipantById(participantId);
     if (participant) {
+        const form = document.getElementById('edit-participant-form');
+        
+
         document.getElementById('edit-participant-id').value = participantId // Set the participant ID
         document.getElementById('edit-first-name').value = participant.firstName;
         document.getElementById('edit-last-name').value = participant.lastName;
         document.getElementById('edit-phone').value = participant.phone; // Populate phone
         document.getElementById('edit-email').value = participant.email; // Populate email
+        document.getElementById('edit-join-date').value = participant.joinDate;
+        document.getElementById('attendance-count').value = participant.attendanceCount;
+
+        
+        
+        // Check if the select and label already exist in the form, if not create them
+        let selectLabel = form.querySelector('label[for="edit-paying-member"]');
+        let select = document.getElementById('edit-paying-member');
+        
+        if (!select) {
+            // Create label for select if it doesn't exist
+            selectLabel = document.createElement('label');
+            selectLabel.textContent = 'Paying Member:';
+            selectLabel.setAttribute('for', 'edit-paying-member');
+
+            // Create select element
+            select = document.createElement('select');
+            select.id = 'edit-paying-member';
+            const optionYes = document.createElement('option');
+            optionYes.value = 'Yes';
+            optionYes.textContent = 'Yes';
+            select.appendChild(optionYes);
+            const optionNo = document.createElement('option');
+            optionNo.value = 'No';
+            optionNo.textContent = 'No';
+            select.appendChild(optionNo);
+
+            // Append the new elements to the form
+            form.appendChild(selectLabel);
+            form.appendChild(select);
+        } else {
+            // If select exists, ensure label exists too
+            if (!selectLabel) {
+                selectLabel = document.createElement('label');
+                selectLabel.textContent = 'Paying Member:';
+                selectLabel.setAttribute('for', 'edit-paying-member');
+                form.insertBefore(selectLabel, select);
+            }
+        }
+
+        // Set the selected value to match the current participant's data
+        select.value = participant.payingMember;
+
 
         // Store the original join date
         const originalJoinDate = participant.joinDate;
@@ -148,31 +230,36 @@ function editParticipant(participantId) {
         document.getElementById('edit-join-date').value = originalJoinDate;  // Populate join date
         document.getElementById('attendance-count').value = participant.attendanceCount; // Populate attendance count
 
-        // Create paying member select dropdown
-        const selectLabel = document.createElement('label');
-        selectLabel.textContent = 'Paying Member:';
-        const select = document.createElement('select');
-        select.id = 'edit-paying-member';
-        const optionYes = document.createElement('option');
-        optionYes.value = 'Yes';
-        optionYes.textContent = 'Yes';
-        const optionNo = document.createElement('option');
-        optionNo.value = 'No';
-        optionNo.textContent = 'No';
-        select.appendChild(optionYes);
-        select.appendChild(optionNo);
+        // Handle the Paying Member dropdown
+        const existingSelect = document.getElementById('edit-paying-member');
+        if (!existingSelect) {
+            const selectLabel = document.createElement('label');
+            selectLabel.textContent = 'Paying Member:';
+            const select = document.createElement('select');
+            select.id = 'edit-paying-member';
+            const optionYes = document.createElement('option');
+            optionYes.value = 'Yes';
+            optionYes.textContent = 'Yes';
+            const optionNo = document.createElement('option');
+            optionNo.value = 'No';
+            optionNo.textContent = 'No';
+            select.appendChild(optionYes);
+            select.appendChild(optionNo);
+            document.getElementById('edit-participant-form').appendChild(selectLabel);
+            document.getElementById('edit-participant-form').appendChild(select);
+        }
 
-         // Set the value of the select dropdown to the participant's payingMember value
-         select.value = participant.payingMember;
+         // Set the selected value to match the current participant's data
+        document.getElementById('edit-paying-member').value = participant.payingMember;
 
-        // Append the label and select dropdown to the form
-        const form = document.getElementById('edit-participant-form');
+         // Append the select dropdown and buttons to the form
+        
         form.appendChild(selectLabel);
         form.appendChild(select);
         
-        // Append form submission buttons
-        appendFormButtons(form);
-
+        form.appendChild(submitButton);
+        form.appendChild(cancelButton);
+        
         document.getElementById('edit-modal').style.display = 'block';
     }
 
